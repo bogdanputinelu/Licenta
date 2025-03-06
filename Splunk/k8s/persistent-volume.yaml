@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: splunk-pv
+  namespace: logging-namespace
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/splunk
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: splunk-pvc
+  namespace: logging-namespace
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

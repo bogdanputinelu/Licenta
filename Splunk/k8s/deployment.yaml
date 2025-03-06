@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splunk
+  namespace: logging-namespace
+  labels:
+    app: splunk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: splunk
+  template:
+    metadata:
+      labels:
+        app: splunk
+    spec:
+      containers:
+        - name: splunk
+          image: splunk/splunk:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+              name: web-interface
+              protocol: TCP
+            - containerPort: 8088
+              name: splunk-hec
+              protocol: TCP
+          env:
+            - name: SPLUNK_START_ARGS
+              value: "--accept-license"
+            - name: SPLUNK_PASSWORD
+              value: "password"
+
+          volumeMounts:
+            - mountPath: /opt/splunk/var
+              name: splunk-storage
+      volumes:
+        - name: splunk-storage
+          persistentVolumeClaim:
+            claimName: splunk-pvc

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentbit
+  namespace: logging-namespace
+  labels:
+    app: fluentbit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentbit
+  template:
+    metadata:
+      labels:
+        app: fluentbit
+        role: allow_hec_splunk
+    spec:
+      containers:
+        - name: fluentbit
+          image: fluent/fluent-bit:3.0.6
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5170
+              name: logging
+              protocol: TCP
+            - containerPort: 2020
+              name: metrics
+              protocol: TCP
+          env:
+            - name: SPLUNK_HEC_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: splunk-hec-token
+                  key: hec-token
+          volumeMounts:
+            - mountPath: /fluent-bit/etc/
+              name: fluentbit
+      volumes:
+        - name: fluentbit
+          configMap:
+            name: fluentbit

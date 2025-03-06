@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentbit
+  namespace: logging-namespace
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush            1
+        Log_Level        debug
+        Daemon           off
+        HTTP_Server      On
+        HTTP_Listen      0.0.0.0
+        HTTP_Port        2020
+        Health_Check     On
+    
+    [INPUT]
+        Name             tcp
+        Listen           0.0.0.0
+        Port             5170
+        Buffer_Size      256
+        Format           json
+    
+    [OUTPUT]
+        Name             splunk
+        Match            *
+        Host             splunk.logging-namespace.svc.cluster.local
+        Port             8088
+        Splunk_Token     ${SPLUNK_HEC_TOKEN}
+        TLS              On
+        TLS.Verify       Off
+        Splunk_Send_Raw  Off
+        Compress         gzip
+        Event_Index      centralized_api_logs
+        Event_Source     $app_name
+        Event_Host       logger
+    
+        
+        

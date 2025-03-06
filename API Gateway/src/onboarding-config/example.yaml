@@ -1,0 +1,12 @@
+api-name: example-api
+namespace: example-namespace
+type: internal / external
+docs-tag: example-tag
+docs-openapi-url: ??????? still debating
+version: v1
+endpoints:
+  - /example/endpoint:
+      GET: group1
+      POST: group2
+  - /example/*:
+      GET: group3
