@@ -32,6 +32,8 @@
 # Improvements
 - Use OAuth or something else for Auth/Authz
 - Add retries to FluentBit exporter?
+- Change splunk image from :latest to :9.4
+- Change postgresql image from :latest to a specific version
 - Dashboard for FluentBit metrics ?
 - Do something with FluentBit metrics / health?
 - Create dashboard in Splunk

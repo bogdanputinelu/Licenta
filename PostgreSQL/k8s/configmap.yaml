@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql
+  namespace: database-namespace
+data:
+  init.sql: |
+    CREATE TABLE users (
+        user_id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL
+    );
+    
+    CREATE TABLE groups (
+        group_id SERIAL PRIMARY KEY,
+        group_name VARCHAR(255) UNIQUE NOT NULL
+    );
+    
+    CREATE TABLE user_groups (
+        user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+        group_id INT REFERENCES groups(group_id) ON DELETE CASCADE,
+        PRIMARY KEY (user_id, group_id)
+    );
+    
+    INSERT INTO users (username, password) VALUES
+    ('alice', '$2b$12$Gt30DRjtGXYRrQjD0Wq0RuuJ12mZwFivn1KgfcJBORF3RUt94QLoC'), -- password is alice
+    ('bob', '$2b$12$YuKkvECLlJ1gycLm/bl0wOlyyOKR3oa1/VqbAcQFcg7pbu2sNjUzu'); -- password is bob
+    
+    INSERT INTO groups (group_name) VALUES
+    ('admin'),
+    ('developer');
+    
+    INSERT INTO user_groups (user_id, group_id) VALUES
+    (1, 1),  -- Alice is in the admin group
+    (1, 2),  -- Alice is in the developer group
+    (2, 2);  -- Bob is in the developer group

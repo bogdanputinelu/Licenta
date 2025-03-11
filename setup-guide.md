@@ -12,3 +12,7 @@
    7. Copy the HEC token that was just created <br /> Settings ⟶ Data ⟶ Data Inputs ⟶ HTTP Event Collector ⟶ Copy
 5. Create a Kubernetes Secret for the Splunk HEC token using the command <br /> `kubectl create secret generic splunk-hec-token --from-literal=hec-token=<SPLUNK_HEC_TOKEN> -n logging-namespace`
 6. Create Kubernetes FluentBit instance <br />`kubectl apply -f FluentBit\k8s`
+7. Create Kubernetes PostgreSQL instance for the auth database <br />`kubectl apply -f PostgreSQL\k8s`
+   - For running commands directly you can enter the pod and connect to the database:<br />`kubectl exec -it <POSTGRESQL_POD_NAME> -n database-namespace -- bash`<br />`psql -U <USERNAME>> -d <DB_NAME>>`
+
+openssl rand -hex 32 | pt kub secret pt jwt gateway
