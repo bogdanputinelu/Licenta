@@ -32,6 +32,10 @@
 # Improvements
 - Use OAuth or something else for Auth/Authz
 - Add retries to FluentBit exporter?
+- Liveness / readiness probe for api gateway / fluentbit?
+- Onboarding process? dau rolling update la gateway?
+- liveness -> /health , readiness -> dependencies (gw ->db) ????
+- Alerts in splunk for unhealthy gateway / fluentbit?
 - Change splunk image from :latest to :9.4
 - Change postgresql image from :latest to a specific version
 - Dashboard for FluentBit metrics ?

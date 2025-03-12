@@ -7,7 +7,7 @@ from logging.handlers import SocketHandler
 from pythonjsonlogger import jsonlogger
 from fastapi.requests import Request
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.responses import Response, PlainTextResponse
+from starlette.responses import Response, JSONResponse
 from starlette_context import context
 
 
@@ -43,10 +43,10 @@ from starlette_context import context
 logger = logging.getLogger("uvicorn")
 
 
-async def error_response(request: Request, exc: Exception) -> Response:
+def log_exception(message: str, exc: Exception):
     logger.error(
         {
-            "message": "Internal Server Error",
+            "message": message,
             "exception": "".join(traceback.format_exception(
                 type(exc), value=exc, tb=exc.__traceback__
             )),
@@ -54,7 +54,11 @@ async def error_response(request: Request, exc: Exception) -> Response:
         }
     )
 
-    return PlainTextResponse("Internal Server Error", status_code=500)
+
+async def error_response(request: Request, exc: Exception) -> Response:
+    log_exception("Internal Server Error", exc)
+
+    return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):
@@ -75,8 +79,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             "response": {
                 "status_code": response.status_code,
                 "size_bytes": response.headers.get("Content-Length"),
-                "response_time_ms": (time.time() - context.get("gateway_start_time")) * 1000,
-                "backend_api_response_time_ms": (context.get("backend_end_time") - context.get("backend_start_time")) * 1000,
+                # "response_time_ms": (time.time() - context.get("gateway_start_time")) * 1000,
+                # "backend_api_response_time_ms": (context.get("backend_end_time") - context.get("backend_start_time")) * 1000,
             },
             "client": {
                 "ip": request.headers.get("X-Forwarded-For", request.client.host).split(",")[0],
