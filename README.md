@@ -16,9 +16,6 @@
 # Tracing
 - API Gateway supports tracing by creating / maintaining a X-Request-ID
 
-# Rate Limiting
-- Rate limit per User (not token, but user, because more tokens can be created) (Prevents abuse from individual users)
-- Rate limit per API (Protect APIs from overload)
 
 # Centralized Automatic Documentation
 - Using the auto generated OpenAPI specification by FastAPI the API Gateway aggregates all APIs documentation
@@ -27,19 +24,4 @@
 - Same API can be differentiated by version
 
 # Versioning
-- The API Gateway can version APIs by specifying it in the onboarding information 
-
-# Improvements
-- Use OAuth or something else for Auth/Authz
-- Add retries to FluentBit exporter?
-- Liveness / readiness probe for api gateway / fluentbit?
-- Onboarding process? dau rolling update la gateway?
-- liveness -> /health , readiness -> dependencies (gw ->db) ????
-- Alerts in splunk for unhealthy gateway / fluentbit?
-- Change splunk image from :latest to :9.4
-- Change postgresql image from :latest to a specific version
-- Dashboard for FluentBit metrics ?
-- Do something with FluentBit metrics / health?
-- Create dashboard in Splunk
-- Set alarms in Splunk for abusing API Gateway (rate limiting)
-- Prometheus + Grafana for visualization for API Gateway metrics?
+- The API Gateway can version APIs by specifying it in the onboarding information

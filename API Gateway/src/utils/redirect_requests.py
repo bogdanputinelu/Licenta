@@ -9,8 +9,7 @@ def generate_url_for_redirect(endpoint: str, query_params: QueryParams = None) -
     if query_params:
         url += f"?{query_params}"
 
-    # return url
-    return "https://google.com"
+    return url
 
 
 def generate_headers(request: Request) -> MutableHeaders:

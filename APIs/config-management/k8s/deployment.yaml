@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway
-  namespace: gateway-namespace
+  name: config-management
+  namespace: config-management-namespace
   labels:
-    app: api-gateway
+    app: config-management
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api-gateway
+      app: config-management
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: config-management
     spec:
       containers:
-      - name: api-gateway
-        image: api-gateway-image
+      - name: config-management
+        image: config-management-image
         command: ["uvicorn", "app:app", "--port=8000"]
         imagePullPolicy: Never
         ports:
         - containerPort: 8000
           protocol: TCP
-          name: gateway-port
+          name: app-port

@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway
-  namespace: gateway-namespace
+  name: hardware-inventory
+  namespace: hardware-inventory-namespace
   labels:
-    app: api-gateway
+    app: hardware-inventory
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api-gateway
+      app: hardware-inventory
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: hardware-inventory
     spec:
       containers:
-      - name: api-gateway
-        image: api-gateway-image
+      - name: hardware-inventory
+        image: hardware-inventory-image
         command: ["uvicorn", "app:app", "--port=8000"]
         imagePullPolicy: Never
         ports:
         - containerPort: 8000
           protocol: TCP
-          name: gateway-port
+          name: app-port

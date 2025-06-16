@@ -20,6 +20,7 @@ DB_HOST = "localhost"
 ENDPOINT_RULES = {}
 INTERNAL_DOCS = {}
 EXTERNAL_DOCS = {}
+DOCS_API_GATEWAY_URL = "http://127.0.0.1:8000/"
 
 
 def read_data_from_yaml_file(root: str, file: str) -> Dict[str, Any]:

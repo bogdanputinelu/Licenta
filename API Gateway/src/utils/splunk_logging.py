@@ -2,7 +2,6 @@ import logging
 import time
 import datetime
 import traceback
-from typing import Set
 from logging.handlers import SocketHandler
 from pythonjsonlogger import jsonlogger
 from fastapi.requests import Request
@@ -11,36 +10,35 @@ from starlette.responses import Response, JSONResponse
 from starlette_context import context
 
 
-# logger_format = '[%(levelname)s %(message)s]'
-# logger = logging.getLogger("FluentBit")
-# logger.setLevel(logging.DEBUG)
-#
-# formatter = jsonlogger.JsonFormatter(
-#     logger_format,
-#     rename_fields={"levelname": "level"},
-#     static_fields={
-#         "app": "gateway",
-#         "namespace": "namespace needs to be set",
-#     }
-# )
-#
-#
-# class FluentBitHandler(SocketHandler):
-#     def emit(self, record):
-#         try:
-#             self.send((self.format(record)).encode())
-#         except Exception:
-#             self.handleError(record)
-#
-#
-# socket_handler = FluentBitHandler(
-#     "fluentbit.logging-namespace.svc.cluster.local", 5170
-# )
-#
-# socket_handler.setFormatter(formatter)
-# logger.addHandler(socket_handler)
-# logger = logging.getLogger()
-logger = logging.getLogger("uvicorn")
+logger_format = '[%(levelname)s %(message)s]'
+logger = logging.getLogger("FluentBit")
+logger.setLevel(logging.DEBUG)
+
+formatter = jsonlogger.JsonFormatter(
+    logger_format,
+    rename_fields={"levelname": "level"},
+    static_fields={
+        "app": "api-gateway",
+        "namespace": "gateway-namespace",
+    }
+)
+
+
+class FluentBitHandler(SocketHandler):
+    def emit(self, record):
+        try:
+            self.send((self.format(record)).encode())
+        except Exception:
+            self.handleError(record)
+
+
+socket_handler = FluentBitHandler(
+    "fluentbit.logging-namespace.svc.cluster.local", 5170
+)
+
+socket_handler.setFormatter(formatter)
+logger.addHandler(socket_handler)
+logger = logging.getLogger()
 
 
 def log_exception(message: str, exc: Exception):
@@ -79,8 +77,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             "response": {
                 "status_code": response.status_code,
                 "size_bytes": response.headers.get("Content-Length"),
-                # "response_time_ms": (time.time() - context.get("gateway_start_time")) * 1000,
-                # "backend_api_response_time_ms": (context.get("backend_end_time") - context.get("backend_start_time")) * 1000,
+                "response_time_ms": (time.time() - context.get("gateway_start_time")) * 1000,
             },
             "client": {
                 "ip": request.headers.get("X-Forwarded-For", request.client.host).split(",")[0],
@@ -89,6 +86,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                 "user-agent": request.headers.get("User-Agent", "unknown"),
             }
         }
+        if context.get("backend_end_time") and context.get("backend_start_time"):
+            event["backend_api_response_time_ms"] = (context.get("backend_end_time") - context.get("backend_start_time")) * 1000
+
         if request.path_params.get("api_name"):
             event["request"]["api_name"] = request.path_params.get("api_name")
 
@@ -107,7 +107,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
         context["X-Request-ID"] = request.headers.get("X-Request-ID", context.get("X-Request-ID"))
-
+        context["gateway_start_time"] = time.time()
         response = await call_next(request)
 
         event = self.format_log(request, response)

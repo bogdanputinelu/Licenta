@@ -1,0 +1,13 @@
+api-name: config-management-api
+namespace: config-management-namespace
+port: 8000
+type: internal
+docs-tag: Management
+docs-openapi-endpoint: /openapi.json
+version: v1
+endpoints:
+  - /example/endpoint:
+      GET: group1
+      POST: group2
+  - /example/*:
+      GET: developer
