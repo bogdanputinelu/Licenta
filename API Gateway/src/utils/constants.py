@@ -109,7 +109,7 @@ def populate_endpoint_rules(onboarding_data: Dict[str, Any]):
 
 
 def parse_onboarding_config_and_populate_data_structures():
-    for root, _, files in os.walk("src/onboarding-config"):
+    for root, _, files in os.walk("./onboarding-config"):
         for file in files:
             if not (file.endswith(".yaml") or file.endswith(".yml")):
                 continue
