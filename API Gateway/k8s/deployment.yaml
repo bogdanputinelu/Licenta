@@ -20,6 +20,12 @@ spec:
         image: api-gateway-image
         command: ["uvicorn", "app:app", "--port=8000"]
         imagePullPolicy: Never
+        env:
+          - name: TOKEN_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: token-secret-key
+                key: secret-key
         ports:
         - containerPort: 8000
           protocol: TCP

@@ -1,15 +1,15 @@
-api-name: config-management
-namespace: config-management-namespace
+api-name: device-management
+namespace: device-management-namespace
 port: 8000
 type: internal
 docs-tag: Management
 docs-openapi-endpoint: /openapi.json
 version: v1
 endpoints:
-  - /configs:
-      GET: developer
-      POST: developer
-  - /configs/*:
+  - /devices:
+      GET: admin
+      POST: admin
+  - /devices/*:
       GET: NO_AUTHENTICATION
       PUT: NO_AUTHENTICATION
       DELETE: NO_AUTHENTICATION

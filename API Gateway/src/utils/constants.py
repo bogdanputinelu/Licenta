@@ -12,11 +12,12 @@ AUTHENTICATE_FLAG = "AUTHENTICATE"
 NO_AUTHENTICATION_FLAG = "NO_AUTHENTICATION"
 PASSWORD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
-TOKEN_SECRET_KEY = "fbceab2049df658b1ad993c3433a10bdcbc340da78af7153a1f01ee42fd0221a"
+TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY")
 DB_USER = "user"
 DB_PASSWORD = "password"
 DB_NAME = "auth_db"
-DB_HOST = "localhost"
+DB_HOST = "postgresql.database-namespace.svc.cluster.local"
+DB_PORT = 5432
 ENDPOINT_RULES = {}
 INTERNAL_DOCS = {}
 EXTERNAL_DOCS = {}

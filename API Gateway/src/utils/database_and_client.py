@@ -7,7 +7,7 @@ from asyncpg import create_pool, Pool
 from fastapi import FastAPI, HTTPException, status
 from starlette_context import context
 from .splunk_logging import logger
-from .constants import DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
+from .constants import DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT
 
 
 database_pool: Pool = None
@@ -18,7 +18,6 @@ async def get_client_session() -> ClientSession:
     global client_session
 
     if client_session is None or client_session.closed:
-        print("sadasdadssad")
         client_session = ClientSession()
 
     return client_session
@@ -38,6 +37,7 @@ async def lifespan(app: FastAPI):
         password=DB_PASSWORD,
         database=DB_NAME,
         host=DB_HOST,
+        port=DB_PORT,
         min_size=1,
         max_size=5
     )
