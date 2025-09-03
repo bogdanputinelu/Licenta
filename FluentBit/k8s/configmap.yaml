@@ -32,7 +32,7 @@ data:
         Splunk_Send_Raw  Off
         Compress         gzip
         Event_Index      centralized_api_logs
-        Event_Source     $app_name
+        Event_Source     logger
         Event_Host       logger
         Retry_Limit      5
     
