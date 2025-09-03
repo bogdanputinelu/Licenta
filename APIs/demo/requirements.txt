@@ -1,0 +1,4 @@
+fastapi==0.110.1
+uvicorn[standard]==0.34.0
+python-json-logger==2.0.7
+starlette-context==0.3.6

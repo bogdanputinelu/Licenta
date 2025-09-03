@@ -1,0 +1,7 @@
+api-name: demo
+namespace: demo-namespace
+port: 8000
+version: v1
+endpoints:
+  - /example/endpoint:
+      GET: developer

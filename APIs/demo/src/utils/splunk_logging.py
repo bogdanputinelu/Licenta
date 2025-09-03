@@ -18,8 +18,8 @@ formatter = jsonlogger.JsonFormatter(
     logger_format,
     rename_fields={"levelname": "level"},
     static_fields={
-        "app": "api-gateway",
-        "namespace": "gateway-namespace",
+        "app": "demo",
+        "namespace": "demo-namespace",
     }
 )
 

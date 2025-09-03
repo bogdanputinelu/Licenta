@@ -25,11 +25,6 @@ async def get_client_session() -> ClientSession:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    This Async Context Manager creates a connection pool to the Database and a global client session used for
-    forwarding requests at the start-up of the FastAPI application.
-    At the FastAPI application shutdown, it will close the connection pool and the global client session.
-    """
     global database_pool, client_session
     await get_client_session()
     database_pool = await create_pool(
@@ -53,22 +48,6 @@ async def retry_database_query(
         fetchval: bool = False,
         exc_info: str = "Failed to query database"
 ) -> Union[Optional[str], List[Dict[str, str]]]:
-    """
-    This is a function that queries the database with the given parametrized query and parameters.
-    It will retry, in case of error, for 3 times, by default. The retry limit can be changed.
-    It will use the connection.fetch() or connection.fetchval() methods to retrieve data.
-
-    This function is used by other intermediary functions to retrieve either the hashed password of a specified user
-    or the groups that the user belongs to, which match a provided list of groups.
-
-    :param query: the SQL query that will be executed in the database
-    :param args: the parameters for the parametrized query
-    :param retry_limit: the number of retries to fetch data from the database in case of error
-    :param fetchval: set to False to use connection.fetch() for retrieving data, or True to use connection.fetchval().
-    :param exc_info: the exception message in case all attempts of querying the database fail
-
-    :return: either a hashed password (string), or a list of group names (list of Dict[str, str])
-    """
     global database_pool
     for attempt in range(retry_limit):
         try:
@@ -109,13 +88,6 @@ async def retry_database_query(
 
 
 async def get_password_from_database(username: str) -> Optional[str]:
-    """
-    Retrieves the hashed password of a specified user, if it exists.
-
-    :param username: the specified user
-
-    :return: the hashed password of the user or None if the user does not exist in the database
-    """
     query = """
         SELECT password
         FROM users 
@@ -137,17 +109,6 @@ async def get_password_from_database(username: str) -> Optional[str]:
 
 
 async def get_user_groups_from_database(username: str, groups: List[str]) -> List[Dict[str, str]]:
-    """
-    Retrieves the groups that the user belongs to, which match a provided list of groups.
-
-    :param username: the specified user
-    :param groups: the specified groups
-
-    :return: a list of dictionaries that contain the groups that the user belongs to,
-             which match a provided list of groups
-
-             example: [{"group_name": "group_1"}, {"group_name": "group_2"}]
-    """
     query = """
         SELECT g.group_name
         FROM groups g

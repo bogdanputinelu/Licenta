@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /mnt/data/splunk
+    path: /mnt/data/splunkdata
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

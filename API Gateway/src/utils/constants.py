@@ -19,9 +19,6 @@ DB_NAME = "auth_db"
 DB_HOST = "postgresql.database-namespace.svc.cluster.local"
 DB_PORT = 5432
 ENDPOINT_RULES = {}
-INTERNAL_DOCS = {}
-EXTERNAL_DOCS = {}
-DOCS_API_GATEWAY_URL = "http://127.0.0.1:8000/"
 
 
 def read_data_from_yaml_file(root: str, file: str) -> Dict[str, Any]:
@@ -46,33 +43,6 @@ def read_data_from_yaml_file(root: str, file: str) -> Dict[str, Any]:
         }
     )
     return {}
-
-
-def populate_automatic_docs_data(onboarding_data: Dict[str, Any]):
-    api_name = onboarding_data.get("api-name")
-    namespace = onboarding_data.get("namespace")
-    port = onboarding_data.get("port")
-    version = onboarding_data.get("version")
-    docs_type = onboarding_data.get("type")
-    docs_tag = onboarding_data.get("docs-tag")
-    docs_openapi_endpoint = onboarding_data.get("docs-openapi-endpoint")
-
-    docs_details = {
-        "openapi_url": f"http://{api_name}.{namespace}.svc.cluster.local:{port}{docs_openapi_endpoint}",
-        "api_name": api_name,
-        "tag": docs_tag
-    }
-
-    if api_name not in INTERNAL_DOCS:
-        INTERNAL_DOCS[api_name] = {}
-
-    INTERNAL_DOCS[api_name][version] = docs_details
-
-    if docs_type.lower() == "external":
-        if api_name not in EXTERNAL_DOCS:
-            EXTERNAL_DOCS[api_name] = {}
-
-        EXTERNAL_DOCS[api_name][version] = docs_details
 
 
 def populate_endpoint_rules(onboarding_data: Dict[str, Any]):
@@ -119,7 +89,6 @@ def parse_onboarding_config_and_populate_data_structures():
             if not onboarding_data:
                 continue
 
-            populate_automatic_docs_data(onboarding_data)
             populate_endpoint_rules(onboarding_data)
 
             logger.info(

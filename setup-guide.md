@@ -16,3 +16,6 @@
    - For running commands directly you can enter the pod and connect to the database:<br />`kubectl exec -it <POSTGRESQL_POD_NAME> -n database-namespace -- bash`<br />`psql -U <USERNAME>> -d <DB_NAME>>`
 
 openssl rand -hex 32 | pt kub secret pt jwt gateway
+
+kubectl create secret generic token-secret-key --from-literal=secret-key=ca50788a9a223aea926e9c49e469844d5600
+f403ac0258802c8791d49eefe784 -n gateway-namespace

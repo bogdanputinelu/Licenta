@@ -1,16 +1,13 @@
 api-name: hardware-inventory
 namespace: hardware-inventory-namespace
 port: 8000
-type: internal
-docs-tag: Management
-docs-openapi-endpoint: /openapi.json
 version: v1
 endpoints:
   - /hardware:
       GET: admin
       POST: admin
   - /hardware/low-stock:
-      GET: NO_AUTHENTICATION
+      GET: developer
   - /hardware/by-location/*:
       GET: NO_AUTHENTICATION
   - /hardware/*:

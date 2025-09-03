@@ -1,9 +1,6 @@
 api-name: example-api
 namespace: example-namespace
 port: 8000
-type: internal
-docs-tag: example-tag
-docs-openapi-endpoint: /openapi.json
 version: v1
 endpoints:
   - /example/endpoint:

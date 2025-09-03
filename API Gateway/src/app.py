@@ -8,7 +8,6 @@ from starlette.middleware import Middleware
 from starlette_context.middleware import RawContextMiddleware
 from starlette_context.plugins import RequestIdPlugin
 from starlette_context import context
-from starlette.templating import Jinja2Templates
 from utils.splunk_logging import LoggingMiddleware, error_response, log_exception
 from utils.authorization import create_jwt_token, authorize_redirects
 from utils.database_and_client import lifespan, get_password_from_database, get_client_session
@@ -46,6 +45,9 @@ async def login(credentials: OAuth2PasswordRequestForm = Depends()):
 
 
 @app.get("/{api_name}/api/{version}/{endpoint:path}", dependencies=[Depends(authorize_redirects)])
+@app.post("/{api_name}/api/{version}/{endpoint:path}", dependencies=[Depends(authorize_redirects)])
+@app.put("/{api_name}/api/{version}/{endpoint:path}", dependencies=[Depends(authorize_redirects)])
+@app.delete("/{api_name}/api/{version}/{endpoint:path}", dependencies=[Depends(authorize_redirects)])
 async def redirect_requests(request: Request, api_name: str, version: str, endpoint: str):
     try:
         context["backend_start_time"] = time.time()

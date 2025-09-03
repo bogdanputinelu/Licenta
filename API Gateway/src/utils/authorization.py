@@ -15,23 +15,10 @@ from .database_and_client import get_user_groups_from_database
 
 BEARER_TOKEN = HTTPBearer(
     auto_error=False,
-    description=(
-        "This authentication scheme requires a **Bearer Token** for authorization.\n\n"
-        "Clients must include a valid **JWT** token in the `Authorization` header as `Bearer <token>`.\n\n"
-        "This token will be automatically added to the headers of all of the endpoints.\n\n"
-        "For endpoints that do not require authentication, the presence of the token will be ignored."
-    )
 )
 
 
 def create_jwt_token(username: str) -> str:
-    """
-    Generates a JWT token with an 8-hour expiration.
-
-    :param username: the specified user
-
-    :return: a JWT token with an 8-hour expiration and the username as the subject
-    """
     token = jwt.encode(
         {"sub": username, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)},
         TOKEN_SECRET_KEY,
@@ -46,15 +33,11 @@ def create_jwt_token(username: str) -> str:
     return token
 
 
-def decode_and_check_jwt_token(token: str) -> str:
-    """
-
-    checks automatically when decoding if the signature has expired !!
-    """
+def decode_and_check_jwt_token(token: Annotated[HTTPAuthorizationCredentials, Depends(BEARER_TOKEN)]) -> str:
     try:
-        payload = jwt.decode(token, TOKEN_SECRET_KEY, ALGORITHM)
+        payload = jwt.decode(token.credentials, TOKEN_SECRET_KEY, ALGORITHM)
         return payload["sub"]
-    except jwt.PyJWTError as exc:
+    except Exception as exc:
         logger.error(
             {
                 "message": "Error when decoding JWT token",
@@ -109,7 +92,7 @@ async def authorize_redirects(
 
     group_names_with_no_flags = list(set(authorization_groups).difference({AUTHENTICATE_FLAG, NO_AUTHENTICATION_FLAG}))
     if len(group_names_with_no_flags) > 0:
-        context["user"] = decode_and_check_jwt_token(token.credentials)
+        context["user"] = decode_and_check_jwt_token(token)
         matched_groups = await get_user_groups_from_database(context["user"], group_names_with_no_flags)
 
         if len(matched_groups) > 0:
@@ -130,7 +113,7 @@ async def authorize_redirects(
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     elif AUTHENTICATE_FLAG in authorization_groups:
-        context["user"] = decode_and_check_jwt_token(token.credentials)
+        context["user"] = decode_and_check_jwt_token(token)
         context["group"] = AUTHENTICATE_FLAG
         logger.info(
             {
