@@ -5,3 +5,10 @@ version: v1
 endpoints:
   - /example/endpoint:
       GET: developer
+  - /example/endpoint2:
+      GET: AUTHENTICATE
+      POST: developer
+  - /example/endpoint3/specific:
+      GET: DENY_ALL_ACCESS
+  - /example/endpoint3/*:
+      GET: NO_AUTHENTICATION

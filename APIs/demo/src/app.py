@@ -12,3 +12,12 @@ async def root(request: Request):
         }
     )
     return {"message": "This is a demo app"}
+
+@app.get("/example/endpoint2")
+@app.post("/example/endpoint2")
+async def root2():
+    return {"message": "This is endpoint 2."}
+
+@app.get("/example/endpoint3/{something}")
+async def root3(something):
+    return {"message": f"This is endpoint 3 - {something}"}

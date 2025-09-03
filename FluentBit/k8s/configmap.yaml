@@ -34,6 +34,7 @@ data:
         Event_Index      centralized_api_logs
         Event_Source     $app_name
         Event_Host       logger
+        Retry_Limit      5
     
         
         
